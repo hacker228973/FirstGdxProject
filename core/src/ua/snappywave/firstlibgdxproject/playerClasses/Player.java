@@ -11,6 +11,10 @@ public class Player {
     private float y;
     private float speed;
 
+    private static int maxCoordinateX=794;
+    private static int maxCoordinateY=1699;
+    private static int startCoordinate=0;
+
     public Player(TextureRegion textureRegion, float x, float y) {
         this.textureRegion = textureRegion;
         this.x = x;
@@ -27,16 +31,16 @@ public class Player {
     }
 
     public void update(float currentX,float currentY) {
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && currentY>0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && currentY>startCoordinate) {
             x -= speed;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)&& currentY<1699) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D)&& currentY<maxCoordinateY) {
             x += speed;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)&& currentX<794) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W)&& currentX<maxCoordinateX) {
             y += speed;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)&& currentX>0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.S)&& currentX>startCoordinate) {
             y -= speed;
         }
     }
