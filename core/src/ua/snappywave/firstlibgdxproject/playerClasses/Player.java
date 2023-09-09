@@ -10,16 +10,35 @@ public class Player {
     private float x;
     private float y;
     private float speed;
+    private float scale;
+    private float playerFrameSizeX; // Размеры персонажа
+    private float playerFrameSizeY;
+    private float maxCoordinateX;
+    private float maxCoordinateY;
+    private float startCoordinate;
+    boolean animationPause;
 
-    private static int maxCoordinateX=794;
-    private static int maxCoordinateY=1699;
-    private static int startCoordinate=0;
+
+
+
+    private int appleCounter;
+
+    // Добавьте переменную для хранения направления персонажа
+    private int directionX = 1; // 1 для правого направления, -1 для левого
 
     public Player(TextureRegion textureRegion, float x, float y) {
-        this.textureRegion = textureRegion;
         this.x = x;
         this.y = y;
-        this.speed = 10.0f; // Скорость движения игрока
+        this.speed = 4.0f;
+        this.scale = 1f;
+        this.appleCounter = appleCounter;
+        directionX = 1;
+        playerFrameSizeX = textureRegion.getRegionWidth()*scale;
+        playerFrameSizeY = textureRegion.getRegionHeight()*scale;
+        maxCoordinateX = 1080 - playerFrameSizeY;
+        maxCoordinateY = 1920 - playerFrameSizeX;
+        startCoordinate = 0;
+        animationPause=false;
     }
 
     public float getX() {
@@ -30,28 +49,62 @@ public class Player {
         return y;
     }
 
-    public void update(float currentX,float currentY) {
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && currentY>startCoordinate) {
+    public int getAppleCounter() {
+        return appleCounter;
+    }
+
+
+    public void setAnimationPause(boolean animationPause) {
+        this.animationPause = animationPause;
+    }
+
+    public boolean isAnimationPause() {
+        return animationPause;
+    }
+
+    public void update(float currentX, float currentY) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && currentY > startCoordinate) {
             x -= speed;
+            directionX = 1; // Изменяем направление на лево
+            setAnimationPause(true);
+
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)&& currentY<maxCoordinateY) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && currentY < maxCoordinateY) {
             x += speed;
+            directionX = -1; // Изменяем направление на право
+            setAnimationPause(true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)&& currentX<maxCoordinateX) {
             y += speed;
+            setAnimationPause(true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)&& currentX>startCoordinate) {
             y -= speed;
+            setAnimationPause(true);
         }
+
+
     }
 
     public void draw(SpriteBatch batch) {
-        batch.draw(textureRegion, x, y);
+        float width = playerFrameSizeX;
+        float height = playerFrameSizeY;
+
+        // Отразите текстуру по горизонтали, если персонаж движется влево
+        if (directionX == 1) {
+            batch.draw(textureRegion, x + width, y, -width, height);
+        } else {
+            batch.draw(textureRegion, x, y, width, height);
+        }
     }
 
     public void dispose() {
         textureRegion.getTexture().dispose();
     }
 
-    // Другие методы для управления игроком
+    public void setTextureFrame(TextureRegion texture){
+        this.textureRegion=texture;
+    }
+
+
 }
